@@ -26,9 +26,10 @@ def get_area(code):
 
 def parse_address(address):
     """Returns an iterator of Tuple[code, area] from an address parsed from the postal codes"""
-    postal_codes = re.findall(r'(?:(?<= )|^)\d{6}(?:(?= )|$)', address, flags=re.MULTILINE)
+    postal_codes = re.finditer(r'(?:(?<= )|^|[A-z]+)(\d{6})(?:(?= )|$)', address, flags=re.MULTILINE)
 
-    for code in postal_codes:
+    for match in postal_codes:
+        code = match.group(1)
         yield code, get_area(code)
 
 
@@ -58,7 +59,7 @@ def main(args):
 
     if file_path is None:
         if address is None:
-            address = input('postal code: ')
+            address = input('Address: ')
 
 
         for code, area in parse_address(address):
