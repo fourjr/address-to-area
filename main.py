@@ -26,7 +26,7 @@ def get_area(code):
 
 def parse_address(address):
     """Returns an iterator of Tuple[code, area] from an address parsed from the postal codes"""
-    postal_codes = re.finditer(r'(?:(?<= )|^|[A-z]+)(\d{6})(?:(?= )|$)', address, flags=re.MULTILINE)
+    postal_codes = re.finditer(r'(?:(?<= )|^|[A-z]+|\(|\))(\d{6})(?:(?= )|$|\)|\(|\.)', address, flags=re.MULTILINE)
 
     for match in postal_codes:
         code = match.group(1)
@@ -44,7 +44,7 @@ def main(args):
                 data = list(csv.DictReader(f))
 
             for i in data:
-                i['area'] = ':'.join(x[1] for x in parse_address(i['address']))
+                i['area'] = '\n'.join(x[1] for x in parse_address(i['address']))
 
             new_fp = file_path[:-4] + '-parsed.csv'
             with open(new_fp, 'w', newline='', encoding='utf8') as f:
